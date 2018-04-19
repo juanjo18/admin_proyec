@@ -1,0 +1,196 @@
+-- MySQL dump 10.16  Distrib 10.1.30-MariaDB, for Win32 (AMD64)
+--
+-- Host: localhost    Database: carpinteria
+-- ------------------------------------------------------
+-- Server version	10.1.30-MariaDB
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Table structure for table `detalle_pedido`
+--
+
+DROP TABLE IF EXISTS `detalle_pedido`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `detalle_pedido` (
+  `id_detalle_pedido` int(11) NOT NULL AUTO_INCREMENT,
+  `pedido_id_pedido` int(11) NOT NULL,
+  `usuario_correo` varchar(45) NOT NULL,
+  PRIMARY KEY (`id_detalle_pedido`),
+  KEY `fk_detalle_pedido_pedido_idx` (`pedido_id_pedido`),
+  KEY `fk_detalle_pedido_usuario1_idx` (`usuario_correo`),
+  CONSTRAINT `fk_detalle_pedido_pedido` FOREIGN KEY (`pedido_id_pedido`) REFERENCES `pedido` (`id_pedido`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_detalle_pedido_usuario1` FOREIGN KEY (`usuario_correo`) REFERENCES `usuario` (`correo`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `detalle_pedido`
+--
+
+LOCK TABLES `detalle_pedido` WRITE;
+/*!40000 ALTER TABLE `detalle_pedido` DISABLE KEYS */;
+/*!40000 ALTER TABLE `detalle_pedido` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `linea_mueble`
+--
+
+DROP TABLE IF EXISTS `linea_mueble`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `linea_mueble` (
+  `id_linea` int(11) NOT NULL AUTO_INCREMENT,
+  `nombre_linea` varchar(45) NOT NULL,
+  PRIMARY KEY (`id_linea`)
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `linea_mueble`
+--
+
+LOCK TABLES `linea_mueble` WRITE;
+/*!40000 ALTER TABLE `linea_mueble` DISABLE KEYS */;
+INSERT INTO `linea_mueble` VALUES (1,'Mesas'),(2,'Sillas'),(3,'Roperos'),(4,'Tocadores'),(5,'Bases de cama'),(6,'Bares'),(7,'Cocinas');
+/*!40000 ALTER TABLE `linea_mueble` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `mueble`
+--
+
+DROP TABLE IF EXISTS `mueble`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `mueble` (
+  `modelo` int(11) NOT NULL AUTO_INCREMENT,
+  `nombre_mueble` varchar(45) NOT NULL,
+  `dimenciones` varchar(45) NOT NULL,
+  `precio` float NOT NULL,
+  `caracteristica` varchar(100) NOT NULL,
+  `foto` varchar(50) NOT NULL,
+  `comentario` varchar(200) NOT NULL,
+  `linea_mueble_id_linea` int(11) NOT NULL,
+  PRIMARY KEY (`modelo`),
+  KEY `fk_mueble_linea_mueble1_idx` (`linea_mueble_id_linea`),
+  CONSTRAINT `fk_mueble_linea_mueble1` FOREIGN KEY (`linea_mueble_id_linea`) REFERENCES `linea_mueble` (`id_linea`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `mueble`
+--
+
+LOCK TABLES `mueble` WRITE;
+/*!40000 ALTER TABLE `mueble` DISABLE KEYS */;
+INSERT INTO `mueble` VALUES (1,'Mesa Estilo Francesa','5 mts.',500,'Es de francia','mesa_francesa.jpg','',1),(2,'Bar Sueco','3 mts. x 4 mts.',5000,'Bar sueco muy bueno','bar_sueco.jpg','',6),(3,'Silla de caoba','2 mts.',100,'Es muy bonita','silla_caoba.jpg','',2);
+/*!40000 ALTER TABLE `mueble` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `ofertas`
+--
+
+DROP TABLE IF EXISTS `ofertas`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `ofertas` (
+  `id_ofertas` int(11) NOT NULL AUTO_INCREMENT,
+  `comentarios` varchar(100) NOT NULL,
+  `precio_oferta` float NOT NULL,
+  `mueble_modelo` int(11) NOT NULL,
+  PRIMARY KEY (`id_ofertas`),
+  KEY `fk_ofertas_mueble1_idx` (`mueble_modelo`),
+  CONSTRAINT `fk_ofertas_mueble1` FOREIGN KEY (`mueble_modelo`) REFERENCES `mueble` (`modelo`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `ofertas`
+--
+
+LOCK TABLES `ofertas` WRITE;
+/*!40000 ALTER TABLE `ofertas` DISABLE KEYS */;
+INSERT INTO `ofertas` VALUES (1,'Aprovecha esta oferta solo con nosotros.',4500,2),(2,'Solo por unica Ocasion',450,1);
+/*!40000 ALTER TABLE `ofertas` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `pedido`
+--
+
+DROP TABLE IF EXISTS `pedido`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `pedido` (
+  `id_pedido` int(11) NOT NULL AUTO_INCREMENT,
+  `fecha_creado` date NOT NULL,
+  `fecha_entrega` date NOT NULL,
+  `mueble_modelo` int(11) NOT NULL,
+  `usuario_correo` varchar(45) NOT NULL,
+  PRIMARY KEY (`id_pedido`),
+  KEY `fk_pedido_mueble1_idx` (`mueble_modelo`),
+  KEY `fk_pedido_usuario1_idx` (`usuario_correo`),
+  CONSTRAINT `fk_pedido_mueble1` FOREIGN KEY (`mueble_modelo`) REFERENCES `mueble` (`modelo`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_pedido_usuario1` FOREIGN KEY (`usuario_correo`) REFERENCES `usuario` (`correo`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `pedido`
+--
+
+LOCK TABLES `pedido` WRITE;
+/*!40000 ALTER TABLE `pedido` DISABLE KEYS */;
+/*!40000 ALTER TABLE `pedido` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `usuario`
+--
+
+DROP TABLE IF EXISTS `usuario`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `usuario` (
+  `nombre` varchar(90) NOT NULL,
+  `correo` varchar(45) NOT NULL,
+  `contrasena` varchar(45) NOT NULL,
+  `direccion` varchar(45) NOT NULL,
+  `telefono` varchar(15) NOT NULL,
+  PRIMARY KEY (`correo`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `usuario`
+--
+
+LOCK TABLES `usuario` WRITE;
+/*!40000 ALTER TABLE `usuario` DISABLE KEYS */;
+INSERT INTO `usuario` VALUES ('Aldo Castañeda Vargas','aldo.castvar@gmail.com','12345','laquesea','12345'),('Aldo Castañeda','aldo@gmail.com','aldo','Tlaxcala','2225671324'),('Elver Galarga','elver@gmail.com','elver','Mexico','0987654321'),('Isis Alexis Hernandez','isis@gmail.com','isis','Tlaxcala','2221234651'),('Juanjo Hernandez','juanjo@gmail.com','juanjo','Puebla','7351121748'),('Victor Dionisio','victor@gmail.com','victor','Tlaxcala','1234567890');
+/*!40000 ALTER TABLE `usuario` ENABLE KEYS */;
+UNLOCK TABLES;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+-- Dump completed on 2018-04-18 23:33:55
