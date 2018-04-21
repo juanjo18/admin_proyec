@@ -18,6 +18,13 @@ class Principal extends CI_Controller {
 		$this->load->view('inicio', $data);
 		$this->load->view('footer');
 	}
+
+	public function _example_output($output = null){
+		$this->load->view('header');
+		$this->load->view('encabezado_cerrar_sesion');
+      	$this->load->view('example.php',(array)$output);
+      	$this->load->view('footer');
+    }
 	
 	public function login(){
 		$this->load->view('header');
@@ -50,12 +57,24 @@ class Principal extends CI_Controller {
          	$datasession = array(
 				'correo'=> $usuario["correo"],
 				'contrasena'=> $usuario["contrasena"],
-				'nombre'=> $usuario["nombre"],);	
-			$this->session->set_userdata($datasession);
-			$this->load->view('header');
-			$this->load->view('encabezado_cerrar_sesion');
-			$this->load->view('sesion_inicio');
-			$this->load->view('footer');
+				'nombre'=> $usuario["nombre"],);
+				
+			if($datasession['correo'] == 'admin' and $datasession['contrasena'] == 'admin'){
+				$this->session->set_userdata($datasession);
+				$this->load->view('header');
+				$this->load->view('encabezado_cerrar_sesion');
+				$this->load->view('vista_administrador');
+				$this->load->view('footer');
+			}
+			else{
+				$this->session->set_userdata($datasession);
+				$this->load->view('header');
+				$this->load->view('encabezado_cerrar_sesion');
+				$this->load->view('sesion_inicio');
+				$this->load->view('footer');
+			}
+
+
 						
        	}
 	}
@@ -141,5 +160,77 @@ class Principal extends CI_Controller {
 		$this->load->view('encabezado_principal');
 		$this->load->view('informacion_empresa');
 		$this->load->view('footer');
+	}
+
+	public function usuarios(){
+		try{
+			$crud = new grocery_CRUD();
+			$crud->set_table('usuario');
+			$crud->columns('nombre','correo', 'contrasena', 'direccion', 'telefono');
+			$crud->required_fields('nombre','correo', 'contrasena', 'direccion', 'telefono');
+			$crud->set_theme('Flexigrid');
+			$output = $crud->render();
+			$this->_example_output($output);
+		
+		}catch(Exception $e){
+			show_error($e->getMessage().' --- '.$e->getTraceAsString());
+		}
+	}
+
+	public function lineas_muebles(){
+		try{
+			$crud = new grocery_CRUD();
+			$crud->set_table('linea_mueble');
+			$crud->columns('id_linea','nombre_linea');
+			$crud->required_fields('id_linea','nombre_linea');
+			$crud->set_theme('Flexigrid');
+			$output = $crud->render();
+			$this->_example_output($output);
+		
+		}catch(Exception $e){
+			show_error($e->getMessage().' --- '.$e->getTraceAsString());
+		}
+	}
+	
+	public function muebles(){
+		try{
+			$crud = new grocery_CRUD();
+			$crud->set_table('mueble');
+			$crud->columns('modelo','nombre_mueble', 'dimenciones', 'precio', 'carateristica', 'foto');
+			$crud->set_theme('Flexigrid');
+			$crud->set_field_upload('foto','assets/uploads/files');
+			$output = $crud->render();
+			$this->_example_output($output);
+		
+		}catch(Exception $e){
+			show_error($e->getMessage().' --- '.$e->getTraceAsString());
+		}
+	}
+	public function ofertas(){
+		try{
+			$crud = new grocery_CRUD();
+			$crud->set_table('ofertas');
+			$crud->columns('id_ofertas','comentarios', 'precio_oferta', 'mueble_modelo');
+			$crud->set_theme('Flexigrid');
+			$output = $crud->render();
+			$this->_example_output($output);
+		
+		}catch(Exception $e){
+			show_error($e->getMessage().' --- '.$e->getTraceAsString());
+		}
+	}
+
+	public function pedidos(){
+		try{
+			$crud = new grocery_CRUD();
+			$crud->set_table('pedido');
+			$crud->columns('id_pedido','fecha_creado', 'fecha_entrega', 'mueble_modelo', 'usuario_correo');
+			$crud->set_theme('Flexigrid');
+			$output = $crud->render();
+			$this->_example_output($output);
+		
+		}catch(Exception $e){
+			show_error($e->getMessage().' --- '.$e->getTraceAsString());
+		}
 	}
 }
